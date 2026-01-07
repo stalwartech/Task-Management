@@ -1,4 +1,5 @@
-import User from "../Model/User.js"
+// import User from "../Model/User.js"
+const User = require("../Model/User.js")
 const Signup = async (req, res) => {
     const {name, email, password} = req.body;
 
