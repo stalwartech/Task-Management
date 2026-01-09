@@ -11,4 +11,4 @@ app.listen(port, async () => {
 })
 
 connectDB()
-app.use("/", router)
+app.use("/auth", router)
