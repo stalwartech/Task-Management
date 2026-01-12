@@ -33,10 +33,12 @@ const updateTask = async (req, res) => {
          if(!tasks){
             return res.status(404).json({message: "Task not found"})
          }
-        //  ownership check
-        if(tasks.user.toString() !== req.user.id){
+        //  ownership check or admin
+        if((tasks.user.toString() !== req.user.id) && (req.user.role !== "ADMIN")){
+            console.log(tasks.user.toString());            
             return res.status(404).json({message: "Not Authorized"})
         }
+     
         const updateTask = await Task.findByIdAndUpdate(
             req.params.id,
             req.body,
@@ -56,7 +58,7 @@ const deleteTask = async (req,res) => {
         if(!taskToDelete){
             return res.status(403).json({message: "Task not found"});
         }
-        if(taskToDelete.user.toString() !== req.user.id){
+        if((taskToDelete.user.toString() !== req.user.id) && (req.user.role !== "ADMIN")){
             return res.status(404).json({message: "Not Authorized"})
         }
         await taskToDelete.deleteOne();
@@ -65,5 +67,6 @@ const deleteTask = async (req,res) => {
            res.status(500).json({ message: error.message });
     }
 }
+
 
 module.exports = {createTask, getTask, updateTask, deleteTask};
