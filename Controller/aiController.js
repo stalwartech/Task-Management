@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Task = require("../Model/Task.js");
+require("dotenv").config();
 
 const optimizeTask = async (req, res) => {
     try{
@@ -17,6 +18,22 @@ const optimizeTask = async (req, res) => {
         - Improved title
         - Improved description
         - Suggested priority (low, medium, high)`
+
+        const response = await axios.post("https://api.deepseek.com/v1/chat/completions",{
+            model: "deepseek-chat",
+            message: [{role: user, content: prompt}],
+        },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.DeepSeek_API_KEY}`,
+            }
+        });
+        const aiResult = response.data.choice[0].message.content;
+        res.json({
+            originalTask: task,
+            aiSuggestion: aiResult,
+        })
     }
     catch(error){
         return res.status(404).json({message: error.message});
